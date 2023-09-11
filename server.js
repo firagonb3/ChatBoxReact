@@ -15,7 +15,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
 io.on('connection', (socket) => {
   console.log('Usuario conectado:', socket.id);
 
@@ -35,5 +34,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Servidor en funcionamiento en el puerto ${PORT}`);
+  console.log(`Servidor en funcionamiento en el puerto http://localhost:${PORT}`);
 });

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import currentDate from '../utils/currentDate';
+import { socketEmit } from "../utils/SocketClient";
 
 export default function ChatroomInput({ className, onTextoEnviado, socket }) {
     
@@ -26,8 +27,8 @@ export default function ChatroomInput({ className, onTextoEnviado, socket }) {
             date: currentDate(),
             position: ''
         }
-
-        socket.emit('chat message', message);
+        
+        socketEmit({ socket: socket, message: message })
         
         onTextoEnviado(message);
         document.querySelector('#ChatroomInput').value = ''

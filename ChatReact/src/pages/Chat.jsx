@@ -6,8 +6,9 @@ import UserAvatar from "../Components/UserAvatar";
 import CustomButton from "../Components/CustomButton";
 import ChatBox from "../Components/ChatBox";
 
-//const socket = io('http://localhost:3000', { transports: ['websocket'] })
-const socket = io()
+import SocketClient from "../utils/SocketClient";
+
+const Socket = SocketClient({ server: 'http://localhost:3000'});
 
 export default function Chat() {
   const [userList, setUserList] = useState([
@@ -58,11 +59,9 @@ export default function Chat() {
           </CustomButton>
           <UserAvatar />
         </div>
-        <ChatBox textoEnviado={textoEnviado} socket={socket} className="flex-grow overflow-auto">
-
-        </ChatBox >
+        <ChatBox textoEnviado={textoEnviado} socket={Socket} className="flex-grow overflow-auto"/>
         <button onClick={agregarUsuario}>Agregar Usuario</button>
-        <ChatroomInput onTextoEnviado={handleTextoEnviado} socket={socket} className="" />
+        <ChatroomInput onTextoEnviado={handleTextoEnviado} socket={Socket} className="" />
       </div>
     </section>
   )

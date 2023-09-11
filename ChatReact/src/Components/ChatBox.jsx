@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import MessageBox from './MessageBox';
 
+import { socketReceived } from "../utils/SocketClient";
+
 export default function ChatBox({ className, textoEnviado, socket }) {
 
     const [chatList, setChatList] = useState([]);
@@ -14,9 +16,12 @@ export default function ChatBox({ className, textoEnviado, socket }) {
 
     const [message, setMessage] = useState('');
 
-    socket.on('chat message', function (message) {
-        message.position = 'left'
-        setMessage(message)
+    socketReceived({
+        socket: socket,
+        func: (message) => { 
+            message.position = 'left'
+            setMessage(message)
+        }
     });
 
     useEffect(() => {
