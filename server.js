@@ -10,7 +10,7 @@ const io = socketIo(server);
 app.use(express.static(__dirname + '/ChatReact/dist'));
 const corsOptions = {
   origin: ['http://localhost:5173'],
-  optionsSuccessStatus: 200 // For legacy browser support
+  optionsSuccessStatus: 200
 }
 
 app.use(cors(corsOptions));
