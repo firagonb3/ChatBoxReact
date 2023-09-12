@@ -1,5 +1,5 @@
 
-## Instalacion
+## Instalacion de dependencias
 npm install; npm --prefix ./ChatReact/ install
 
 
