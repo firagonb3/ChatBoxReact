@@ -3,17 +3,18 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 
 function App() {
-  const { isAuthenticated, loginWithRedirect, user, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout, user, getAccessTokenSilently } = useAuth0();
 
   const fetchDataFromServer = async () => {
     try {
       const token = await getAccessTokenSilently();
-      console.log(token)
-      const response = await axios.get('http://localhost:3000/api/private', {
+      console.log(token);
+      const response = await axios.get('http://localhost:3000/api/secure-data', {
         headers: {
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
+
       console.log('Datos del servidor:', response.data);
     } catch (error) {
       console.error('Error al obtener datos del servidor:', error);
@@ -32,7 +33,10 @@ function App() {
             <button onClick={fetchDataFromServer}>Obtener datos protegidos</button>
           </>
         ) : (
-          <button onClick={loginWithRedirect}>Iniciar sesión</button>
+          <>
+              <button onClick={loginWithRedirect}>Iniciar sesión</button>
+              <button onClick={logout}>Cerrar sesion</button>
+          </>
         )}
       </header>
     </div>

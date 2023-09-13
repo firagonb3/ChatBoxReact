@@ -1,46 +1,37 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
-const { auth, requiredScopes } = require('express-oauth2-jwt-bearer');
+const jwt = require('jsonwebtoken'); // Para trabajar con tokens JWT
 
+const app = express();
+
+// Middleware para verificar la autenticación
+function authenticateToken(req, res, next) {
+    const token = req.header('Authorization');
+    if (!token) return res.sendStatus(401); // Unauthorized
+
+    jwt.verify(token, 'GH9bWXmzQf0FK60vxxm7LNtbdiou82XNC_Rjdf2VcSmniL-o28R2iOEk5xEXPEvx', (err, user) => {
+        console.error('Error de verificación de token:', err);
+        if (err) return res.sendStatus(403); // Forbidden
+
+        req.user = user;
+        next();
+    });
+}
+
+app.use(express.static(__dirname + '/ChatReact/dist'));
 const corsOptions = {
-  origin: ['http://localhost:5173'],
-  optionsSuccessStatus: 200
+    origin: ['http://localhost:5173'],
+    optionsSuccessStatus: 200
 }
 
 app.use(cors(corsOptions));
 
-// Authorization middleware. When used, the Access Token must
-// exist and be verified against the Auth0 JSON Web Key Set.
-const checkJwt = auth({
-    audience: 'https://dev-l7owe0cd4jlvwoe1.us.auth0.com/api/v2/',
-    issuerBaseURL: `https://dev-l7owe0cd4jlvwoe1.us.auth0.com/`,
+// Ruta protegida para obtener datos del usuario autenticado
+app.get('/api/secure-data', authenticateToken, (req, res) => {
+    // En este ejemplo, req.user contiene los datos del usuario autenticado
+    res.json({ message: 'Acceso a datos protegidos', user: req.user });
 });
 
-// This route doesn't need authentication
-app.get('/api/public', function (req, res) {
-    res.json({
-        message: 'Hello from a public endpoint! You don\'t need to be authenticated to see this.'
-    });
+app.listen(3000, () => {
+    console.log('Servidor en funcionamiento en el puerto 3000');
 });
-
-// This route needs authentication
-app.get('/api/private', checkJwt, function (req, res) {
-    res.json({
-        message: 'Hello from a private endpoint! You need to be authenticated to see this.'
-    });
-});
-
-const checkScopes = requiredScopes('read:messages');
-
-app.get('/api/private-scoped', checkJwt, checkScopes, function (req, res) {
-    res.json({
-        message: 'Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this.'
-    });
-});
-
-app.listen(3000, function () {
-    console.log('Listening on http://localhost:3000');
-});
-
-

@@ -1,11 +1,12 @@
 import { Auth0Provider } from '@auth0/auth0-react';
 
 const domain = 'dev-l7owe0cd4jlvwoe1.us.auth0.com';
-const clientId = '9kAyIPtegdsAsIkZwy6sqNF7ltb04OIj';
+const clientId = 'Z80Vygftn1VKjbMjMCpv1t64LWNly6Kz';
 
 const auth0Config = {
   domain,
   clientId,
+  audience: 'http://localhost:3000',
   redirectUri: window.location.origin,
 };
 
