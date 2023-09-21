@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import currentDate from '../utils/currentDate';
 import { socketEmit } from "../utils/SocketClient";
 
-export default function ChatroomInput({ className, onTextoEnviado, socket }) {
-    
+export default function ChatroomInput({ className, onTextoEnviado, socket, userID }) {
     const [texto, setTexto] = useState('');
+    const [toUserId, setToUserId] = useState('');
+
+    useEffect(() => {
+        setToUserId(userID)
+    }, [userID]);
 
     const handleTextAreaChange = (event) => {
         setTexto(event.target.value);
@@ -19,7 +23,6 @@ export default function ChatroomInput({ className, onTextoEnviado, socket }) {
     };
 
     const enviarTexto = () => {
-
         if (texto.trim() === '') return;
 
         const message = {
@@ -28,7 +31,11 @@ export default function ChatroomInput({ className, onTextoEnviado, socket }) {
             position: ''
         }
         
-        socketEmit({ socket: socket, message: message })
+        socketEmit({ 
+            socket: socket, 
+            toUserId: 9,
+            message: message 
+        });
         
         onTextoEnviado(message);
         document.querySelector('#ChatroomInput').value = ''

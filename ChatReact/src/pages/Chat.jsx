@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import ChatroomInput from "../Components/ChatroomInput"
 import UserList from "../Components/UserList"
@@ -11,27 +11,41 @@ import SocketClient from "../utils/SocketClient";
 const Socket = SocketClient({ server: 'http://localhost:3000'});
 
 export default function Chat() {
+
+  useEffect(() => {
+    console.log()
+    Socket.emit('set-user-id', Math.floor(Math.random() * 100) + 1);
+  }, []);
+
   const [userList, setUserList] = useState([
     {
       userName: "usuario1",
       name: "Nombre del Usuario 1",
+      id: 1,
     },
     {
       userName: "usuario2",
       name: "Nombre del Usuario 2",
+      id:2,
     },
   ]);
 
   const [textoEnviado, setTextoEnviado] = useState('');
+  const [userID, setUserID] = useState('');
 
   const handleTextoEnviado = (texto) => {
     setTextoEnviado(texto);
   };
 
+  const onUserID = (id) => {
+    setUserID(id)
+  }
+
   const agregarUsuario = () => {
     const nuevoUsuario = {
       userName: `usuario${userList.length + 1}`,
       name: `Nombre del Usuario ${userList.length + 1}`,
+      id: userList.length + 1,
     };
     setUserList([...userList, nuevoUsuario]);
   };
@@ -40,7 +54,7 @@ export default function Chat() {
     <section>
       <aside id="default-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-          <UserList list={userList} />
+          <UserList list={userList} onUserID={onUserID} />
         </div>
       </aside>
 
@@ -61,7 +75,7 @@ export default function Chat() {
         </div>
         <ChatBox textoEnviado={textoEnviado} socket={Socket} className="flex-grow overflow-auto"/>
         <button onClick={agregarUsuario}>Agregar Usuario</button>
-        <ChatroomInput onTextoEnviado={handleTextoEnviado} socket={Socket} className="" />
+        <ChatroomInput onTextoEnviado={handleTextoEnviado} socket={Socket} userID={userID} className="" />
       </div>
     </section>
   )

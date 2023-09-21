@@ -6,15 +6,13 @@ import { socketReceived } from "../utils/SocketClient";
 export default function ChatBox({ className, textoEnviado, socket }) {
 
     const [chatList, setChatList] = useState([]);
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         if (textoEnviado.message !== "" && textoEnviado !== '') {
             setChatList((prevChatList) => [...prevChatList, textoEnviado]);
         }
     }, [textoEnviado]);
-
-
-    const [message, setMessage] = useState('');
 
     socketReceived({
         socket: socket,
